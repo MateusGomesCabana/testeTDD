@@ -6,12 +6,14 @@
 package br.fib.teste;
 
 import br.pos.teste.Avaliador;
+import br.pos.teste.CriadorDeLeilao;
 import br.pos.teste.Lance;
 import br.pos.teste.Leilao;
 import br.pos.teste.Usuario;
 import java.util.List;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -20,15 +22,26 @@ import org.junit.Test;
  */
 public class AvaliadorTest {
 
+    private Avaliador leiloeiro;
+    private Usuario joao;
+    private Usuario jose;
+    private Usuario maria;
+    private Leilao leilao;
+
+    @Before
+    public void criaAvaliador() {
+        this.leiloeiro = new Avaliador();
+        this.joao = new Usuario("João");
+        this.jose = new Usuario("José");
+        this.maria = new Usuario("Maria");
+        this.leilao = new Leilao("Playstation 3 Novo");
+    }
+
     @Test
     public void deveRetornarOMaiorEMenorLance() {
-        Usuario joao = new Usuario("Joao");
-        Usuario jose = new Usuario("José");
-        Usuario maria = new Usuario("Maria");
-        Leilao leilao = new Leilao("Playstation 3 Novo");
-        leilao.propoe(new Lance(joao, 300.0));
-        leilao.propoe(new Lance(jose, 400.0));
-        leilao.propoe(new Lance(maria, 250.0));
+        leilao.propoe(new Lance(this.joao, 300.0));
+        leilao.propoe(new Lance(this.jose, 400.0));
+        leilao.propoe(new Lance(this.maria, 250.0));
 
         Avaliador avaliador = new Avaliador();
         avaliador.avalia(leilao);
@@ -38,17 +51,15 @@ public class AvaliadorTest {
         assertEquals(250, avaliador.getMenorLance(), 0.00001);
     }
 
+    /**
+     * metodo que testa os 3 maiores lances
+     */
     @Test
-    public void deveEncontrarOsTresMaioresLances() {
-
-        Usuario joao = new Usuario("João");
-        Usuario maria = new Usuario("Maria");
-        Leilao leilao = new Leilao("Playstation 3 Novo");
-
-        leilao.propoe(new Lance(joao, 100.0));
-        leilao.propoe(new Lance(maria, 200.0));
-        leilao.propoe(new Lance(joao, 300.0));
-        leilao.propoe(new Lance(maria, 400.0));
+    public void deveEncontrarOsTresMaioresLancesSemDesignPattern() {
+        leilao.propoe(new Lance(this.joao, 100.0));
+        leilao.propoe(new Lance(this.maria, 200.0));
+        leilao.propoe(new Lance(this.joao, 300.0));
+        leilao.propoe(new Lance(this.maria, 400.0));
 
         Avaliador leiloeiro = new Avaliador();
         leiloeiro.avalia(leilao);
@@ -64,7 +75,6 @@ public class AvaliadorTest {
      */
     @Test
     public void naoDeveAceitarDoisLancesSeguidosDoMesmoUsuario() {
-        Leilao leilao = new Leilao("Macbook Pro 15");
         Usuario steveJobs = new Usuario("Steve Jobs");
         leilao.propoe(new Lance(steveJobs, 2000));
         leilao.propoe(new Lance(steveJobs, 3000));
@@ -77,27 +87,26 @@ public class AvaliadorTest {
      */
     @Test
     public void naoDeveAceitarMaisDoQue5LancesDeUmMesmoUsuario() {
-        Leilao leilao = new Leilao("Macbook Pro 15");
         Usuario steveJobs = new Usuario("Steve Jobs");
         Usuario billGates = new Usuario("Bill Gates");
 
-        leilao.propoe(new Lance(steveJobs, 2000));
-        leilao.propoe(new Lance(billGates, 3000));
-        leilao.propoe(new Lance(steveJobs, 4000));
-        leilao.propoe(new Lance(billGates, 5000));
-        leilao.propoe(new Lance(steveJobs, 6000));
-        leilao.propoe(new Lance(billGates, 7000));
-        leilao.propoe(new Lance(steveJobs, 8000));
-        leilao.propoe(new Lance(billGates, 9000));
-        leilao.propoe(new Lance(steveJobs, 10000));
-        leilao.propoe(new Lance(billGates, 11000));
+        this.leilao.propoe(new Lance(steveJobs, 2000));
+        this.leilao.propoe(new Lance(billGates, 3000));
+        this.leilao.propoe(new Lance(steveJobs, 4000));
+        this.leilao.propoe(new Lance(billGates, 5000));
+        this.leilao.propoe(new Lance(steveJobs, 6000));
+        this.leilao.propoe(new Lance(billGates, 7000));
+        this.leilao.propoe(new Lance(steveJobs, 8000));
+        this.leilao.propoe(new Lance(billGates, 9000));
+        this.leilao.propoe(new Lance(steveJobs, 10000));
+        this.leilao.propoe(new Lance(billGates, 11000));
 
         // deve ser ignorado
-        leilao.propoe(new Lance(steveJobs, 12000));
+        this.leilao.propoe(new Lance(steveJobs, 12000));
 
-        assertEquals(10, leilao.getLances().size());
-        int ultimo = leilao.getLances().size() - 1;
-        Lance ultimoLance = leilao.getLances().get(ultimo);
+        assertEquals(10, this.leilao.getLances().size());
+        int ultimo = this.leilao.getLances().size() - 1;
+        Lance ultimoLance = this.leilao.getLances().get(ultimo);
         assertEquals(11000.0, ultimoLance.getValor(), 0.00001);
     }
 
@@ -106,16 +115,11 @@ public class AvaliadorTest {
      */
     @Test
     public void deveEntenderLancesEmOrdemCrescenteComOutrosValores() {
-        Usuario joao = new Usuario("Joao");
-        Usuario jose = new Usuario("José");
-        Usuario maria = new Usuario("Maria");
-        Leilao leilao = new Leilao("Playstation 3 Novo");
-        leilao.propoe(new Lance(joao, 1000.0));
-        leilao.propoe(new Lance(jose, 2000.0));
-        leilao.propoe(new Lance(maria, 3000.0));
+        this.leilao.propoe(new Lance(this.joao, 1000.0));
+        this.leilao.propoe(new Lance(this.jose, 2000.0));
+        this.leilao.propoe(new Lance(this.maria, 3000.0));
 
-        Avaliador leiloeiro = new Avaliador();
-        leiloeiro.avalia(leilao);
+        this.leiloeiro.avalia(this.leilao);
 
         assertEquals(3000, leiloeiro.getMaiorLance(), 0.00001);
         assertEquals(1000, leiloeiro.getMenorLance(), 0.00001);
@@ -126,35 +130,46 @@ public class AvaliadorTest {
      */
     @Test
     public void deveEntenderLancesEmOrdemDecresenteComOutrosValores() {
-        Usuario joao = new Usuario("Joao");
-        Usuario jose = new Usuario("José");
-        Usuario maria = new Usuario("Maria");
-        Leilao leilao = new Leilao("Playstation 3 Novo");
-        leilao.propoe(new Lance(maria, 3000.0));
-        leilao.propoe(new Lance(jose, 2000.0));
-        leilao.propoe(new Lance(joao, 1000.0));
+        this.leilao.propoe(new Lance(this.maria, 3000.0));
+        this.leilao.propoe(new Lance(this.jose, 2000.0));
+        this.leilao.propoe(new Lance(this.joao, 1000.0));
 
-        Avaliador leiloeiro = new Avaliador();
-        leiloeiro.avalia(leilao);
+        this.leiloeiro.avalia(this.leilao);
 
         assertEquals(3000, leiloeiro.getMaiorLance(), 0.00001);
         assertEquals(1000, leiloeiro.getMenorLance(), 0.00001);
     }
+
     /**
      * deve entender apenas um lance
      */
     @Test
     public void deveEntenderApenaUmLance() {
-        Usuario joao = new Usuario("Joao");
-        Usuario jose = new Usuario("José");
-        Usuario maria = new Usuario("Maria");
-        Leilao leilao = new Leilao("Playstation 3 Novo");
-        leilao.propoe(new Lance(joao, 1000.0));
-
-        Avaliador leiloeiro = new Avaliador();
-        leiloeiro.avalia(leilao);
+        this.leilao.propoe(new Lance(this.joao, 1000.0));
+        this.leiloeiro.avalia(this.leilao);
 
         assertEquals(1000, leiloeiro.getMaiorLance(), 0.00001);
         assertEquals(1000, leiloeiro.getMenorLance(), 0.00001);
     }
+    /**
+     * método que testa os 3 maiores lances utilizando design pattern builder
+     */
+    @Test
+    public void deveEncontrarOsTresMaioresLances() {
+        Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+                .lance(this.joao, 100.0)
+                .lance(this.maria, 200.0)
+                .lance(this.joao, 300.0)
+                .lance(this.maria, 400.0)
+                .constroi();
+
+        this.leiloeiro.avalia(leilao);
+        List<Lance> maiores = this.leiloeiro.getTresMaiores();
+
+        assertEquals(3, maiores.size());
+        assertEquals(400, maiores.get(0).getValor(), 0.00001);
+        assertEquals(300, maiores.get(1).getValor(), 0.00001);
+        assertEquals(200, maiores.get(2).getValor(), 0.00001);
+    }
+
 }

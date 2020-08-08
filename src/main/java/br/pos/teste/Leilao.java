@@ -22,24 +22,28 @@ public class Leilao {
         this.descricao = descricao;
         this.lances = new ArrayList<Lance>();
     }
-
+    /**
+     * Função que retorna a quantidade de lances de um usuario
+     * @param usuario
+     * @return 
+     */
+    private int qtdDelanceDo(Usuario usuario) {
+        int total = 0;
+        for (Lance lance1 : lances) {
+            if (lance1.getUsuario().equals(usuario)) {
+                total++;
+            }
+        }
+        return total;
+    }
     /**
      * antes de add verifica se o ultimo lance foi dado pela mesma pessoa
      *
      * @param lance
      */
     public void propoe(Lance lance) {
-        if (lances.isEmpty() || !lances.get(lances.size() - 1).getUsuario().equals(lance.getUsuario())) {
-            int cont = 0;
-            for (Lance lance1 : lances) {
-                if (lance1.getUsuario().equals(lance.getUsuario())) {
-                    cont++;
-                }
-            }
-            if (cont <= 4) {
-                lances.add(lance);
-            }
-
+        if (lances.isEmpty() || !lances.get(lances.size() - 1).getUsuario().equals(lance.getUsuario()) && qtdDelanceDo(lance.getUsuario()) < 5) {
+            this.lances.add(lance);
         }
     }
 
