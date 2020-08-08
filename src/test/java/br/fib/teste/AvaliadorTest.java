@@ -30,12 +30,12 @@ public class AvaliadorTest {
         leilao.propoe(new Lance(jose, 400.0));
         leilao.propoe(new Lance(maria, 250.0));
 
-        Avaliador leiloeiro = new Avaliador();
-        leiloeiro.avalia(leilao);
+        Avaliador avaliador = new Avaliador();
+        avaliador.avalia(leilao);
 
         // comparando a saida com o esperado
-        Assert.assertEquals(400, leiloeiro.getMaiorLance(), 0.00001);
-        Assert.assertEquals(250, leiloeiro.getMenorLance(), 0.00001);
+        assertEquals(400, avaliador.getMaiorLance(), 0.00001);
+        assertEquals(250, avaliador.getMenorLance(), 0.00001);
     }
 
     @Test
@@ -71,6 +71,7 @@ public class AvaliadorTest {
         assertEquals(1, leilao.getLances().size());
         assertEquals(2000, leilao.getLances().get(0).getValor(), 0.00001);
     }
+
     /**
      * teste que verifica se um usuario tem mais do que 5 lances
      */
@@ -100,4 +101,60 @@ public class AvaliadorTest {
         assertEquals(11000.0, ultimoLance.getValor(), 0.00001);
     }
 
+    /**
+     * teste que verifica se ele passa todos os lances em ordem crescente
+     */
+    @Test
+    public void deveEntenderLancesEmOrdemCrescenteComOutrosValores() {
+        Usuario joao = new Usuario("Joao");
+        Usuario jose = new Usuario("José");
+        Usuario maria = new Usuario("Maria");
+        Leilao leilao = new Leilao("Playstation 3 Novo");
+        leilao.propoe(new Lance(joao, 1000.0));
+        leilao.propoe(new Lance(jose, 2000.0));
+        leilao.propoe(new Lance(maria, 3000.0));
+
+        Avaliador leiloeiro = new Avaliador();
+        leiloeiro.avalia(leilao);
+
+        assertEquals(3000, leiloeiro.getMaiorLance(), 0.00001);
+        assertEquals(1000, leiloeiro.getMenorLance(), 0.00001);
+    }
+
+    /**
+     * teste que verifica se ele passa todos os lances em ordem decrescente
+     */
+    @Test
+    public void deveEntenderLancesEmOrdemDecresenteComOutrosValores() {
+        Usuario joao = new Usuario("Joao");
+        Usuario jose = new Usuario("José");
+        Usuario maria = new Usuario("Maria");
+        Leilao leilao = new Leilao("Playstation 3 Novo");
+        leilao.propoe(new Lance(maria, 3000.0));
+        leilao.propoe(new Lance(jose, 2000.0));
+        leilao.propoe(new Lance(joao, 1000.0));
+
+        Avaliador leiloeiro = new Avaliador();
+        leiloeiro.avalia(leilao);
+
+        assertEquals(3000, leiloeiro.getMaiorLance(), 0.00001);
+        assertEquals(1000, leiloeiro.getMenorLance(), 0.00001);
+    }
+    /**
+     * deve entender apenas um lance
+     */
+    @Test
+    public void deveEntenderApenaUmLance() {
+        Usuario joao = new Usuario("Joao");
+        Usuario jose = new Usuario("José");
+        Usuario maria = new Usuario("Maria");
+        Leilao leilao = new Leilao("Playstation 3 Novo");
+        leilao.propoe(new Lance(joao, 1000.0));
+
+        Avaliador leiloeiro = new Avaliador();
+        leiloeiro.avalia(leilao);
+
+        assertEquals(1000, leiloeiro.getMaiorLance(), 0.00001);
+        assertEquals(1000, leiloeiro.getMenorLance(), 0.00001);
+    }
 }

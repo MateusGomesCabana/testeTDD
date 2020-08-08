@@ -28,11 +28,14 @@ public class Avaliador {
         for (Lance lance : leilao.getLances()) {
             if (lance.getValor() > maiorDeTodos) {
                 maiorDeTodos = lance.getValor();
-            } else if (lance.getValor() < menorDeTodos) {
+            } 
+            if (lance.getValor() < menorDeTodos) {
                 menorDeTodos = lance.getValor();
             }
         }
-        pegaOsMaioresNo(leilao);
+        if(leilao.getLances().size() >= 3){
+          pegaOsMaioresNo(leilao);
+        }
     }
     /**
      * Pega os 3 maiores valores
