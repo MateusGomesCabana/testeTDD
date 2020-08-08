@@ -19,27 +19,28 @@ public class Avaliador {
     private double maiorDeTodos = Double.NEGATIVE_INFINITY;
     private double menorDeTodos = Double.POSITIVE_INFINITY;
     private List<Lance> maiores;
-    
+
     /**
      * seta os maiores e menores valores
-     * @param leilao 
+     *
+     * @param leilao
      */
     public void avalia(Leilao leilao) {
         for (Lance lance : leilao.getLances()) {
             if (lance.getValor() > maiorDeTodos) {
                 maiorDeTodos = lance.getValor();
-            } 
+            }
             if (lance.getValor() < menorDeTodos) {
                 menorDeTodos = lance.getValor();
             }
         }
-        if(leilao.getLances().size() >= 3){
-          pegaOsMaioresNo(leilao);
-        }
+        pegaOsMaioresNo(leilao);
     }
+
     /**
      * Pega os 3 maiores valores
-     * @param leilao 
+     *
+     * @param leilao
      */
     private void pegaOsMaioresNo(Leilao leilao) {
         maiores = new ArrayList<Lance>(leilao.getLances());
@@ -54,25 +55,32 @@ public class Avaliador {
                 return 0;
             }
         });
-        maiores = maiores.subList(0, 3);
+        maiores = ((maiores.size() >= 3) ? maiores.subList(0,  3) : maiores.subList(0,  maiores.size() ));
+//        maiores = maiores.subList(0, 3);
     }
+
     /**
      * getter dos 3 maiores valores
-     * @return 
+     *
+     * @return
      */
     public List<Lance> getTresMaiores() {
         return this.maiores;
     }
+
     /**
      * getter do maior valor
-     * @return 
+     *
+     * @return
      */
     public double getMaiorLance() {
         return maiorDeTodos;
     }
+
     /**
      * getter do menor valor
-     * @return 
+     *
+     * @return
      */
     public double getMenorLance() {
         return menorDeTodos;
