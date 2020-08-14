@@ -39,16 +39,16 @@ public class AvaliadorTest {
 
     @Test
     public void deveRetornarOMaiorEMenorLance() {
-        leilao.propoe(new Lance(this.joao, 300.0));
-        leilao.propoe(new Lance(this.jose, 400.0));
-        leilao.propoe(new Lance(this.maria, 250.0));
+        Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+                .lance(this.joao, 300.0)
+                .lance(this.jose, 400.0)
+                .lance(this.joao, 250.0)
+                .constroi();
 
-        Avaliador avaliador = new Avaliador();
-        avaliador.avalia(leilao);
-
+        this.leiloeiro.avalia(leilao);
         // comparando a saida com o esperado
-        assertEquals(400, avaliador.getMaiorLance(), 0.00001);
-        assertEquals(250, avaliador.getMenorLance(), 0.00001);
+        assertEquals(400, this.leiloeiro.getMaiorLance(), 0.00001);
+        assertEquals(250, this.leiloeiro.getMenorLance(), 0.00001);
     }
 
     /**
@@ -76,8 +76,11 @@ public class AvaliadorTest {
     @Test
     public void naoDeveAceitarDoisLancesSeguidosDoMesmoUsuario() {
         Usuario steveJobs = new Usuario("Steve Jobs");
-        leilao.propoe(new Lance(steveJobs, 2000));
-        leilao.propoe(new Lance(steveJobs, 3000));
+        Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+                .lance(steveJobs, 2000)
+                .lance(steveJobs, 3000)
+                .constroi();
+       
         assertEquals(1, leilao.getLances().size());
         assertEquals(2000, leilao.getLances().get(0).getValor(), 0.00001);
     }
@@ -89,24 +92,22 @@ public class AvaliadorTest {
     public void naoDeveAceitarMaisDoQue5LancesDeUmMesmoUsuario() {
         Usuario steveJobs = new Usuario("Steve Jobs");
         Usuario billGates = new Usuario("Bill Gates");
-
-        this.leilao.propoe(new Lance(steveJobs, 2000));
-        this.leilao.propoe(new Lance(billGates, 3000));
-        this.leilao.propoe(new Lance(steveJobs, 4000));
-        this.leilao.propoe(new Lance(billGates, 5000));
-        this.leilao.propoe(new Lance(steveJobs, 6000));
-        this.leilao.propoe(new Lance(billGates, 7000));
-        this.leilao.propoe(new Lance(steveJobs, 8000));
-        this.leilao.propoe(new Lance(billGates, 9000));
-        this.leilao.propoe(new Lance(steveJobs, 10000));
-        this.leilao.propoe(new Lance(billGates, 11000));
-
-        // deve ser ignorado
-        this.leilao.propoe(new Lance(steveJobs, 12000));
-
-        assertEquals(10, this.leilao.getLances().size());
-        int ultimo = this.leilao.getLances().size() - 1;
-        Lance ultimoLance = this.leilao.getLances().get(ultimo);
+        Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+                .lance(steveJobs, 2000)
+                .lance(billGates, 3000)
+                .lance(steveJobs, 4000)
+                .lance(billGates, 5000)
+                .lance(steveJobs, 6000)
+                .lance(billGates, 7000)
+                .lance(steveJobs, 8000)
+                .lance(billGates, 9000)
+                .lance(steveJobs, 10000)
+                .lance(billGates, 11000)
+                .lance(steveJobs, 12000)//deve ser ignorado
+                .constroi();
+        assertEquals(10, leilao.getLances().size());
+        int ultimo = leilao.getLances().size() - 1;
+        Lance ultimoLance = leilao.getLances().get(ultimo);
         assertEquals(11000.0, ultimoLance.getValor(), 0.00001);
     }
 
@@ -115,14 +116,16 @@ public class AvaliadorTest {
      */
     @Test
     public void deveEntenderLancesEmOrdemCrescenteComOutrosValores() {
-        this.leilao.propoe(new Lance(this.joao, 1000.0));
-        this.leilao.propoe(new Lance(this.jose, 2000.0));
-        this.leilao.propoe(new Lance(this.maria, 3000.0));
+        Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+                .lance(this.joao, 1000.0)
+                .lance(this.jose, 2000.0)
+                .lance(this.maria, 3000.0)
+                .constroi();
+       
+        this.leiloeiro.avalia(leilao);
 
-        this.leiloeiro.avalia(this.leilao);
-
-        assertEquals(3000, leiloeiro.getMaiorLance(), 0.00001);
-        assertEquals(1000, leiloeiro.getMenorLance(), 0.00001);
+        assertEquals(3000, this.leiloeiro.getMaiorLance(), 0.00001);
+        assertEquals(1000, this.leiloeiro.getMenorLance(), 0.00001);
     }
 
     /**
@@ -130,14 +133,16 @@ public class AvaliadorTest {
      */
     @Test
     public void deveEntenderLancesEmOrdemDecresenteComOutrosValores() {
-        this.leilao.propoe(new Lance(this.maria, 3000.0));
-        this.leilao.propoe(new Lance(this.jose, 2000.0));
-        this.leilao.propoe(new Lance(this.joao, 1000.0));
+        Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+                .lance(this.maria, 3000.0)
+                .lance(this.jose, 2000.0)
+                .lance(this.joao, 1000.0)
+                .constroi();
+        
+        this.leiloeiro.avalia(leilao);
 
-        this.leiloeiro.avalia(this.leilao);
-
-        assertEquals(3000, leiloeiro.getMaiorLance(), 0.00001);
-        assertEquals(1000, leiloeiro.getMenorLance(), 0.00001);
+        assertEquals(3000, this.leiloeiro.getMaiorLance(), 0.00001);
+        assertEquals(1000, this.leiloeiro.getMenorLance(), 0.00001);
     }
 
     /**
@@ -145,12 +150,16 @@ public class AvaliadorTest {
      */
     @Test
     public void deveEntenderApenaUmLance() {
-        this.leilao.propoe(new Lance(this.joao, 1000.0));
-        this.leiloeiro.avalia(this.leilao);
+        Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+                .lance(this.joao, 1000.0)
+                .constroi();
+        //this.leilao.propoe(new Lance(this.joao, 1000.0));
+        this.leiloeiro.avalia(leilao);
 
-        assertEquals(1000, leiloeiro.getMaiorLance(), 0.00001);
-        assertEquals(1000, leiloeiro.getMenorLance(), 0.00001);
+        assertEquals(1000, this.leiloeiro.getMaiorLance(), 0.00001);
+        assertEquals(1000, this.leiloeiro.getMenorLance(), 0.00001);
     }
+
     /**
      * método que testa os 3 maiores lances utilizando design pattern builder
      */
